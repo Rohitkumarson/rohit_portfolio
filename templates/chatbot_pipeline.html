@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Production AI Pipeline - Vertical Flow</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        font-family: 'Google Sans', 'Segoe UI', system-ui, sans-serif;
+        background: linear-gradient(135deg, #0f172a, #1e293b, #0f172a);
+        color: #f0e2e2;
+        min-height: 100vh;
+        padding: 20px;
+        overflow-x: hidden;
+    }
+
+    .ai-pipeline-container {
+        max-width: 100%;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 2rem;
+        background: linear-gradient(90deg, #4285F4, #34A853, #FBBC05, #EA4335);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 2rem;
+        letter-spacing: -0.5px;
+        font-weight: 700;
+    }
+
+    .architecture {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        min-height: 900px;
+        margin: 0 auto;
+        background: rgba(15,23,42,0.5);
+        border-radius: 24px;
+        border: 2px solid #334155;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        padding: 30px 20px;
+    }
+
+    .node {
+        position: absolute;
+        min-width: 140px;
+        padding: 14px 18px;
+        background: rgba(30,41,59,0.85);
+        border: 2px solid #475569;
+        border-radius: 16px;
+        text-align: center;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        backdrop-filter: blur(6px);
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .node:hover {
+        transform: scale(1.05);
+        border-color: #60a5fa;
+    }
+
+    /* Entry points */
+    .node.entry-point {
+        background: rgba(66,133,244,0.25);
+        border-color: #60a5fa;
+        box-shadow: 0 0 25px rgba(96,165,250,0.4);
+    }
+
+    /* API Server - The Orchestrator */
+    .node.api-server {
+        background: linear-gradient(135deg, #4285F4, #1e40af);
+        border-color: #60a5fa;
+        color: white;
+        min-width: 180px;
+        padding: 18px 24px;
+        font-size: 1.1rem;
+        box-shadow: 0 0 40px rgba(66,133,244,0.6);
+    }
+
+    .node.api-server small {
+        display: block;
+        font-size: 0.75rem;
+        opacity: 0.9;
+        margin-top: 4px;
+    }
+
+    /* Downstream services */
+    .node.downstream {
+        background: rgba(52,168,83,0.2);
+        border-color: #34a853;
+    }
+
+    /* Storage */
+    .node.storage {
+        background: rgba(251,188,5,0.2);
+        border-color: #fbbc05;
+    }
+
+    /* LLM - Final service */
+    .node.llm {
+        background: rgba(234,67,53,0.25);
+        border-color: #ea4335;
+        min-width: 160px;
+    }
+
+    .node.active {
+        transform: scale(1.15);
+        box-shadow: 0 0 50px rgba(66,133,244,0.95);
+        z-index: 12;
+    }
+
+    .node.active.entry-point {
+        box-shadow: 0 0 60px rgba(66,133,244,1);
+        background: rgba(66,133,244,0.4);
+    }
+
+    .node.active.api-server {
+        box-shadow: 0 0 70px rgba(66,133,244,1);
+    }
+
+    .node.active.downstream {
+        box-shadow: 0 0 50px rgba(52,168,83,0.8);
+        background: rgba(52,168,83,0.35);
+    }
+
+    .node.active.storage {
+        box-shadow: 0 0 50px rgba(251,188,5,0.8);
+        background: rgba(251,188,5,0.35);
+    }
+
+    .node.active.llm {
+        box-shadow: 0 0 50px rgba(234,67,53,0.9);
+        background: rgba(234,67,53,0.4);
+    }
+
+    /* Vertical Flow Positions */
+    .n-client  { top: 30px;  left: 50%; transform: translateX(-50%); }
+    .n-gateway { top: 130px; left: 50%; transform: translateX(-50%); }
+    .n-lb      { top: 230px; left: 50%; transform: translateX(-50%); }
+    .n-api     { top: 340px; left: 50%; transform: translateX(-50%); }
+    
+    /* Horizontal layer - Cache, Embed, Vector */
+    .n-cache   { top: 480px; left: 15%; }
+    .n-embed   { top: 480px; left: 50%; transform: translateX(-50%); }
+    .n-vector  { top: 480px; right: 15%; }
+    
+    /* DB */
+    .n-db      { top: 600px; left: 50%; transform: translateX(-50%); }
+    
+    /* LLM at bottom */
+    .n-llm     { top: 720px; left: 50%; transform: translateX(-50%); }
+
+    /* Flow arrows */
+    .flow-arrow {
+        position: absolute;
+        width: 3px;
+        background: linear-gradient(180deg, #4285F4, transparent);
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+        opacity: 0.4;
+    }
+
+    .arrow-1 { top: 80px;  height: 35px; }
+    .arrow-2 { top: 180px; height: 35px; }
+    .arrow-3 { top: 280px; height: 40px; }
+    .arrow-4 { top: 410px; height: 50px; }
+    .arrow-5 { top: 540px; height: 40px; }
+    .arrow-6 { top: 660px; height: 40px; }
+
+    /* Horizontal connectors */
+    .h-connector {
+        position: absolute;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #4285F4, transparent);
+        top: 495px;
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .h-conn-left  { left: 25%; width: 23%; }
+    .h-conn-right { right: 25%; width: 23%; }
+
+    .popup {
+        position: fixed;
+        min-width: 300px;
+        max-width: 420px;
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        border: 2px solid #4285F4;
+        border-radius: 14px;
+        padding: 16px 20px;
+        font-size: 0.9rem;
+        box-shadow: 0 20px 60px rgba(66,133,244,0.7);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        z-index: 9999;
+        pointer-events: none;
+        max-height: 450px;
+        overflow-y: auto;
+    }
+
+    .popup.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .popup .title {
+        color: #60a5fa;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.5;
+        font-size: 1.05rem;
+        word-wrap: break-word;
+    }
+
+    .popup .content {
+        color: #cbd5e1;
+        line-height: 1.6;
+        font-size: 0.92rem;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+    .popup .content strong {
+        color: #e2e8f0;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .popup .time {
+        font-size: 0.78rem;
+        opacity: 0.65;
+        margin-top: 12px;
+        display: block;
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+        .architecture {
+            max-width: 600px;
+            min-height: 850px;
+            padding: 25px 15px;
+        }
+        
+        .node {
+            min-width: 110px;
+            font-size: 0.85rem;
+            padding: 10px 14px;
+        }
+        
+        .node.api-server {
+            min-width: 140px;
+            font-size: 0.95rem;
+        }
+        
+        .n-cache   { left: 10%; }
+        .n-vector  { right: 10%; }
+        
+        h1 {
+            font-size: 1.6rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .architecture {
+            max-width: 400px;
+            min-height: 800px;
+            padding: 20px 10px;
+        }
+        
+        .node {
+            min-width: 90px;
+            font-size: 0.75rem;
+            padding: 8px 12px;
+        }
+        
+        .node.api-server {
+            min-width: 120px;
+            font-size: 0.85rem;
+        }
+        
+        .n-cache   { left: 5%; }
+        .n-embed   { top: 500px; }
+        .n-vector  { right: 5%; }
+        
+        h1 {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="ai-pipeline-container">
+    <h1>⚡ CortexStack – Enterprise Conversational AI System</h1>
+
+    <div class="architecture">
+
+        <!-- Flow Arrows -->
+        <div class="flow-arrow arrow-1"></div>
+        <div class="flow-arrow arrow-2"></div>
+        <div class="flow-arrow arrow-3"></div>
+        <div class="flow-arrow arrow-4"></div>
+        <div class="flow-arrow arrow-5"></div>
+        <div class="flow-arrow arrow-6"></div>
+        
+        <!-- Horizontal Connectors -->
+        <div class="h-connector h-conn-left"></div>
+        <div class="h-connector h-conn-right"></div>
+
+        <!-- Entry Points (Top to Bottom) -->
+        <div class="node n-client entry-point" data-id="client">🌐 Client</div>
+        <div class="node n-gateway entry-point" data-id="gateway">🔐 Auth Gateway</div>
+        <div class="node n-lb entry-point" data-id="lb">⚖️ Load Balancer</div>
+
+        <!-- API Server - The Orchestrator -->
+        <div class="node n-api api-server" data-id="api">
+            <strong>⭐ API Server</strong>
+            <small>Session + History Logic</small>
+        </div>
+
+        <!-- Horizontal Layer: Cache, Embed, Vector -->
+        <div class="node n-cache storage" data-id="cache">⚡ Cache<br><small>(Redis)</small></div>
+        <div class="node n-embed downstream" data-id="embed">🔢 Embedding<br><small>Service</small></div>
+        <div class="node n-vector storage" data-id="vector">🧮 Vector<br><small>DB</small></div>
+
+        <!-- Database -->
+        <div class="node n-db storage" data-id="db">💾 DB<br><small>(Chat History / Metadata)
+</small></div>
+
+        <!-- LLM Service -->
+        <div class="node n-llm llm" data-id="llm">🤖 LLM Service<br><small>(Claude / OpenAI / Gemini)</small></div>
+
+    </div>
+
+    <!-- Global popup -->
+    <div class="popup" id="globalPopup">
+        <div class="title" id="popupTitle">—</div>
+        <div class="content" id="popupContent"></div>
+        <div class="time" id="popupTime"></div>
+    </div>
+</div>
+
+<script>
+const questions = [
+    "👋 Hi there!",
+    "🌟 Hello! How are you?",
+    "💬 Hey, what's up?",
+    "🎉 Good morning!",
+    "✨ Greetings!",
+    "🚀 What is machine learning?",
+    "🧠 Explain neural networks",
+    "⛓️ How does blockchain work?",
+    "⚛️ What is quantum computing?",
+    "🔧 Tell me about DevOps",
+    "☁️ What is cloud computing?",
+    "🤖 How do transformers work in AI?",
+    "🎯 Explain reinforcement learning",
+    "📦 What is containerization?",
+    "💡 How does NLP work?",
+    "🎨 What is generative AI?",
+    "🔐 Explain cryptography basics",
+    "📊 What is data science?",
+    "🌐 How does the internet work?",
+    "⚡ What is edge computing?"
+];
+
+const responses = [
+    "😊 Hello! I'm here to help you with anything you need. What can I do for you today?",
+    "👋 Hey there! Great to see you! How can I assist you?",
+    "🌟 Hi! I'm ready to help. What's on your mind?",
+    "✨ Greetings! I'm your AI assistant. Ask me anything!",
+    "💫 Hello! Nice to meet you! What would you like to know?",
+    "🚀 Machine learning is a branch of AI that enables systems to learn from data and improve their performance without explicit programming.",
+    "🧠 Neural networks are computing systems inspired by biological neural networks that consist of layers of interconnected nodes.",
+    "⛓️ Blockchain is a decentralized, distributed ledger that records transactions across many computers securely.",
+    "⚛️ Quantum computing uses principles of quantum mechanics to perform computations exponentially faster for certain problems.",
+    "🔧 DevOps combines software development and IT operations to shorten the development lifecycle and deliver high-quality software.",
+    "☁️ Cloud computing delivers on-demand computing resources over the internet with scalability and pay-as-you-go pricing.",
+    "🤖 Transformers are neural network architectures that use self-attention mechanisms to process sequential data efficiently.",
+    "🎯 Reinforcement learning is where an agent learns to make decisions by receiving rewards or penalties from its environment.",
+    "📦 Containerization packages applications with their dependencies into standardized units for consistent deployment.",
+    "💡 Natural Language Processing enables computers to understand, interpret, and generate human language using AI.",
+    "🎨 Generative AI creates new content by learning patterns from training data, powering text, image, and code generation.",
+    "🔐 Cryptography secures information through mathematical techniques, protecting data confidentiality and authenticity.",
+    "📊 Data science combines statistics, programming, and domain expertise to extract insights from data.",
+    "🌐 The internet is a global network of interconnected computers that communicate using standardized protocols.",
+    "⚡ Edge computing processes data closer to its source, reducing latency and improving real-time performance."
+];
+
+function $(id) { return document.getElementById(id); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function showPopup(nodeEl, title, content = '', isClientResponse = false) {
+    const popup = $('globalPopup');
+    const rect = nodeEl.getBoundingClientRect();
+    
+    $('popupTitle').textContent = title;
+    $('popupContent').innerHTML = content;
+    $('popupTime').textContent = new Date().toLocaleTimeString([], {
+        hour: '2-digit', minute:'2-digit', second:'2-digit'
+    });
+    
+    popup.style.opacity = '0';
+    popup.style.visibility = 'visible';
+    
+    const popupRect = popup.getBoundingClientRect();
+    const popupWidth = Math.min(popupRect.width, window.innerWidth - 20);
+    const popupHeight = popupRect.height;
+    
+    let left = rect.left + (rect.width / 2) - (popupWidth / 2);
+    let top = rect.top - popupHeight - 15;
+    
+    if (left < 10) left = 10;
+    if (left + popupWidth > window.innerWidth - 10) {
+        left = window.innerWidth - popupWidth - 10;
+    }
+    
+    if (top < 10) {
+        top = rect.bottom + 15;
+    }
+    
+    popup.style.left = left + 'px';
+    popup.style.top = top + 'px';
+    popup.style.transform = 'none';
+    
+    popup.style.opacity = '';
+    popup.classList.add('visible');
+    
+    const displayTime = isClientResponse ? 2500 : 1500;
+    setTimeout(() => popup.classList.remove('visible'), displayTime);
+}
+
+function highlightNode(id) {
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
+    const node = document.querySelector(`[data-id="${id}"]`);
+    if (node) {
+        node.classList.add('active');
+        return node;
+    }
+    return null;
+}
+
+async function simulatePipeline() {
+    const qIndex = Math.floor(Math.random() * questions.length);
+    const q = questions[qIndex];
+    const response = responses[qIndex];
+
+    // 1. Client - User sends request (2.5s)
+    let node = highlightNode('client');
+    if (node) showPopup(node, '📨 Client Request', `<strong>${q}</strong><br><br>Protocol: HTTPS<br>Content-Type: application/json`, true);
+    await sleep(1200);
+
+    // 2. Auth Gateway - Authentication (1.5s)
+    node = highlightNode('gateway');
+    if (node) showPopup(node, '🔐 Auth Gateway', 'JWT token verified<br>User ID: user_abc123<br>Rate limit: OK (45/100)<br>Quota: 87% remaining', false);
+    await sleep(900);
+
+    // 3. Load Balancer - Route traffic (1.5s)
+    node = highlightNode('lb');
+    if (node) showPopup(node, '⚖️ Load Balancer', 'Distributing request<br><br><strong>Selected:</strong> API-Server-3<br>Health: 100%<br>Latency: 12ms', false);
+    await sleep(900);
+
+    // 4. API Server receives and orchestrates (1.5s)
+    node = highlightNode('api');
+    if (node) showPopup(node, '⭐ API Server', '<strong>Orchestrating Request</strong><br><br>Session ID: sess_abc123<br>Processing pipeline...<br>✅ Session + History Logic', false);
+    await sleep(1000);
+
+    // 5. Check Cache (1.5s)
+    const cacheHit = Math.random() > 0.65;
+    node = highlightNode('cache');
+    if (cacheHit) {
+        if (node) showPopup(node, '⚡ Cache HIT', '<strong>API → Cache (Redis)</strong><br><br>Found cached response!<br>Key: req_hash_7a8f<br>TTL: 15 min<br>Saved ~2.3s', false);
+        await sleep(850);
+        
+        // Return cached response (2.5s)
+        node = highlightNode('client');
+        const responsePreview = response.length > 140 ? response.substring(0, 140) + '...' : response;
+        if (node) showPopup(node, '✅ Response (Cached)', `<strong>${responsePreview}</strong><br><br>Status: 200 OK<br>Latency: 0.8s<br>Source: Cache`, true);
+        await sleep(2700);
+    } else {
+        if (node) showPopup(node, '⚡ Cache MISS', '<strong>API → Cache (Redis)</strong><br><br>No cached response<br>Proceeding with full pipeline', false);
+        await sleep(850);
+
+        // 6. Embed Service (1.5s)
+        node = highlightNode('embed');
+        if (node) showPopup(node, '🔢 Embed Service', '<strong>API → Embedding</strong><br><br>Model: text-embedding-3-large<br>Dimensions: 1536<br>Input: User message<br>Latency: 45ms', false);
+        await sleep(900);
+
+        // 7. Vector DB Search (1.5s)
+        node = highlightNode('vector');
+        if (node) showPopup(node, '🧮 Vector DB', '<strong>API → Vector Search</strong><br><br>Query: Semantic similarity<br>Top 3 matches:<br>• Doc #1: 0.94<br>• Doc #2: 0.89<br>• Doc #3: 0.81', false);
+        await sleep(1000);
+
+        // 8. Database - Fetch History (1.5s)
+        node = highlightNode('db');
+        if (node) showPopup(node, '💾 PostgreSQL', '<strong>API → Database</strong><br><br>Query: Fetch chat history<br>Session: sess_abc123<br>Messages: 12<br>Tokens: 2,847<br>Query time: 23ms', false);
+        await sleep(950);
+
+        // 9. LLM Service - Generate Response (1.5s)
+        node = highlightNode('llm');
+        if (node) showPopup(node, '🤖 LLM Service', '<strong>API → LLM Call</strong><br><br>Model: Claude / GPT-4<br>Prompt: User query + Context<br>Temperature: 0.7<br>Max tokens: 500<br><br>Generating response...', false);
+        await sleep(2200);
+
+        // 10. Stream response to client (2.5s)
+        node = highlightNode('client');
+        const responsePreview = response.length > 140 ? response.substring(0, 140) + '...' : response;
+        if (node) showPopup(node, '📡 Response (LLM)', `<strong>${responsePreview}</strong>`, true);
+        await sleep(2700);
+
+        // 11. Save to Database (1.5s)
+        node = highlightNode('db');
+        if (node) showPopup(node, '💾 PostgreSQL', '<strong>API → Save History</strong><br><br>Session: sess_abc123<br>Saved: User + Assistant<br>Tokens: ' + Math.floor(Math.random() * 300 + 150) + '<br>Status: ✅ Persisted', false);
+        await sleep(1000);
+    }
+
+    // Reset
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
+}
+
+async function startDemo() {
+    while (true) {
+        await simulatePipeline();
+        await sleep(2000);
+    }
+}
+
+window.addEventListener('resize', () => {
+    $('globalPopup').classList.remove('visible');
+});
+
+window.addEventListener('load', () => {
+    startDemo();
+});
+</script>
+</body>
+</html>

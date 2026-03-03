@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rohit Kumar - AI/ML Engineer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4;
+            margin: 0.5in;
+        }
+
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            line-height: 1.35;
+            color: #000000;
+            background: #ffffff;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.5in;
+            font-size: 10pt;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2.5px solid #1a365d;
+        }
+
+        h1 {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #1a365d;
+            margin-bottom: 3px;
+            letter-spacing: 1px;
+        }
+
+        .title {
+            font-size: 11pt;
+            color: #2c5282;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .contact-info {
+            font-size: 9pt;
+            color: #333333;
+            line-height: 1.4;
+        }
+
+        .contact-info a {
+            color: #2c5282;
+            text-decoration: none;
+        }
+
+        h2 {
+            font-size: 11pt;
+            color: #1a365d;
+            margin-top: 10px;
+            margin-bottom: 6px;
+            padding-bottom: 2px;
+            border-bottom: 1.5px solid #2c5282;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.8px;
+        }
+
+        .summary {
+            font-size: 9.5pt;
+            line-height: 1.4;
+            color: #000000;
+            text-align: justify;
+            margin-bottom: 8px;
+        }
+
+        .experience-item, .education-item, .project-item {
+            margin-bottom: 10px;
+            page-break-inside: avoid;
+        }
+
+        .job-header, .project-header {
+            margin-bottom: 3px;
+        }
+
+        .job-title, .project-title {
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .company {
+            font-size: 10pt;
+            color: #2c5282;
+            font-weight: 600;
+        }
+
+        .date {
+            font-size: 9pt;
+            color: #555555;
+            font-style: italic;
+            float: right;
+        }
+
+        .job-description, .project-description {
+            margin-left: 16px;
+            font-size: 9.5pt;
+            color: #000000;
+            margin-top: 2px;
+        }
+
+        .job-description li, .project-description li {
+            margin-bottom: 2px;
+            line-height: 1.35;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px 12px;
+            margin-top: 6px;
+        }
+
+        .skill-item {
+            font-size: 9.5pt;
+            line-height: 1.3;
+        }
+
+        .skill-label {
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .skill-content {
+            color: #000000;
+        }
+
+        .education-header {
+            margin-bottom: 2px;
+        }
+
+        .degree {
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .institution {
+            font-size: 9.5pt;
+            color: #2c5282;
+            font-weight: 600;
+        }
+
+        .education-details {
+            font-size: 9pt;
+            color: #333333;
+            margin-top: 1px;
+        }
+
+        .tech-stack {
+            font-size: 9pt;
+            color: #555555;
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .download-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: #1a365d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #2c5282;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+
+        @media print {
+            body {
+                padding: 0.3in;
+                font-size: 9.5pt;
+            }
+            
+            h1 {
+                font-size: 22pt;
+            }
+            
+            h2 {
+                font-size: 10.5pt;
+                margin-top: 9px;
+                margin-bottom: 5px;
+            }
+            
+            .experience-item, .education-item, .project-item {
+                margin-bottom: 8px;
+            }
+
+            .download-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ROHIT KUMAR</h1>
+        <div class="title">AI/ML Engineer</div>
+        <div class="contact-info">
+            📧 rohitkrsoni1999@gmail.com | 📱 +91 7783805286 , +91 9576243008 | 📍 Mohali, Punjab, India<br>
+            💼 <a href="https://linkedin.com/in/rohit-kumar-0993ab232">https://linkedin.com/in/rohit-kumar-0993ab232</a> | 💻 <a href="https://github.com/Rohitkumarsony?tab=repositories">https://github.com/Rohitkumarsony?tab=repositories</a> | 🤗 <a href="https://huggingface.co/hjsgfd">https://huggingface.co/hjsgfd</a>
+        </div>
+    </div>
+
+    <h2>Professional Summary</h2>
+    <p class="summary">
+        AI/ML Engineer with 2 years of hands-on experience building and deploying production AI systems. Experience working on RAG pipelines and fine-tuning large language models for practical use cases. Contributed to the development of scalable, low-latency AI solutions used in live environments. Strong working knowledge of model development, backend API services, and vector databases such as ChromaDB and Pinecone, with exposure to transformer models, conversational AI systems, MLOps practices, and end-to-end machine learning pipelines.
+    </p>
+
+    <h2>Professional Experience</h2>
+    
+    <div class="experience-item clearfix">
+        <div class="job-header">
+            <div class="job-title">Associate AI/ML Engineer</div>
+            <span class="date">April 2024 — Present</span>
+        </div>
+        <div class="company">EMINENCE INTERNET TECHNOLOGY PVT. LTD., Mohali, India</div>
+        <ul class="job-description">
+            <li>Architected production RAG systems with VectorDB handling 10,000+ daily queries, achieving high accuracy using LangChain and LangGraph frameworks</li>
+            <li>Fine-tuned transformer models (BERT, T5, LLaMA 3.1) with LoRA achieving 95-98% accuracy on custom datasets, reducing training time by 60% through transfer learning optimization</li>
+            <li>Built real-time conversational AI with WebSocket integration, TTS/STT capabilities, and emotion detection, improving user engagement by 80%</li>
+            <li>Developed MLOps pipelines with Docker, CI/CD, automated deployment, and A/B testing, reducing deployment cycles by 60%</li>
+            <li>Created ML-powered web scraper with CNN-based popup detection (98% accuracy) handling anti-bot measures across 500+ websites</li>
+        </ul>
+    </div>
+
+    <h2>Technical Skills</h2>
+    <div class="skills-grid">
+        <div class="skill-item">
+            <span class="skill-label">AI/ML:</span>
+            <span class="skill-content">PyTorch, TensorFlow, HuggingFace, LangChain, LangGraph, RAG, Fine-tuning, NLP, Computer Vision</span>
+        </div>
+        <div class="skill-item">
+            <span class="skill-label">Languages:</span>
+            <span class="skill-content">Python, SQL, Bash, PHP, HTML, CSS, JavaScript</span>
+        </div>
+        <div class="skill-item">
+            <span class="skill-label">Backend:</span>
+            <span class="skill-content">FastAPI, Django, Flask, RESTful APIs, WebSocket, WebRTC ,Microservices</span>
+        </div>
+        <div class="skill-item">
+            <span class="skill-label">Databases:</span>
+            <span class="skill-content">PostgreSQL, MongoDB, ChromaDB, Pinecone, FAISS, Redis</span>
+        </div>
+        <div class="skill-item">
+            <span class="skill-label">Infrastracture:</span>
+            <span class="skill-content">Docker, Git, GitHub, CI/CD, AWS (S3, EC2), Linux</span>
+        </div>
+        <div class="skill-item">
+            <span class="skill-label">Models:</span>
+            <span class="skill-content">BERT, T5, LLaMA, GPT, MobileNetV2, Wav2Vec2, CNN, RNN, LSTM</span>
+        </div>
+    </div>
+
+    <h2>Key Projects</h2>
+
+    <div class="project-item">
+        <div class="project-header">
+            <div class="project-title">Enterprise Multi-Agent RAG System</div>
+        </div>
+        <ul class="project-description">
+            <li>Built production multi-agent system with LangGraph featuring specialized agents for retrieval, synthesis, and fact-checking</li>
+            <li>Implemented dynamic routing, context-aware memory with Redis, achieving high accuracy on 10,000+ daily queries</li>
+            <li class="tech-stack"><strong>Tech Stack:</strong> LangGraph, Pinecone, FastAPI, Redis, Multi-Agent Architecture</li>
+        </ul>
+    </div>
+
+    <div class="project-item">
+        <div class="project-header">
+            <div class="project-title">AI Podcast Intelligence Platform</div>
+        </div>
+        <ul class="project-description">
+            <li>Production platform with AssemblyAI speaker diarization, music classification, and multi-host identification for 1+ hour episodes</li>
+            <li>Implemented chunked processing (10-min windows) avoiding token limits, real-time WebSocket progress tracking, and ChromaDB embeddings for searchable insights</li>
+            <li class="tech-stack"><strong>Tech Stack:</strong> AssemblyAI, ElevenLabs, AWS S3, WebSocket, LangChain, ChromaDB</li>
+        </ul>
+    </div>
+
+    <div class="project-item">
+        <div class="project-header">
+            <div class="project-title">ML-Powered Intelligent Web Scraper</div>
+        </div>
+        <ul class="project-description">
+            <li>Advanced scraping system with CNN model achieving 98% popup detection accuracy, handling anti-bot measures and CAPTCHA across 500+ websites</li>
+            <li>Automated data extraction with retry logic, headless Chrome, and production-grade error handling</li>
+            <li class="tech-stack"><strong>Tech Stack:</strong> Selenium, CNN, Computer Vision, BeautifulSoup, Headless Chrome</li>
+        </ul>
+    </div>
+
+    <div class="project-item">
+        <div class="project-header">
+            <div class="project-title">Deepfake Audio Detection System</div>
+        </div>
+        <ul class="project-description">
+            <li>ML system detecting synthetic audio using Wav2Vec2 embeddings achieving 92.86% accuracy on 70,000 samples with Logistic Regression</li>
+            <li>Handles variable-length audio with preprocessing, feature extraction (768-dimensional), and StandardScaler normalization</li>
+            <li class="tech-stack"><strong>Tech Stack:</strong> Wav2Vec2, Audio ML, Logistic Regression, SVM, Feature Engineering</li>
+        </ul>
+    </div>
+    <div class="project-item">
+        <div class="project-header">
+            <span class="project-title">IoT Device Control via ADB & MQTT</span>
+        </div>
+        <ul>
+            <li>Engineered remote control system for Hisense TV and Fire TV using ADB and MQTT protocols for seamless automation</li>
+            <li>Implemented real-time command execution and bidirectional communication, reducing manual intervention by 90%</li>
+            <li class="tech-stack">Tech: ADB, MQTT Protocol, IoT, Python, Smart Home Automation</li>
+        </ul>
+    </div>
+
+    <h2>Education</h2>
+    
+    <div class="education-item">
+        <div class="education-header">
+            <div class="degree">Bachelor of Technology (B.Tech) in Computer Science and Engineering</div>
+            <div class="institution">Swami Vivekanand Group of Institute of Engineering and Technology, Mohali, Punjab</div>
+            <div class="education-details">
+                CGPA: 8.5/10 (85%) | Graduated: 2024
+            </div>
+        </div>
+    </div>
+
+    <!-- <button class="download-btn" onclick="window.print()">
+        📥 Download PDF
+    </button> -->
+
+    <script>
+        // Optimize for single page
+        window.addEventListener('load', function() {
+            const body = document.body;
+            const maxHeight = 11 * 96 - 96; // 11 inches minus margins
+            
+            let fontSize = parseFloat(getComputedStyle(body).fontSize);
+            let iterations = 0;
+            const maxIterations = 50;
+            
+            while (body.scrollHeight > maxHeight && fontSize > 7 && iterations < maxIterations) {
+                fontSize -= 0.1;
+                body.style.fontSize = fontSize + 'pt';
+                iterations++;
+            }
+        });
+    </script>
+</body>
+</html>
